@@ -1,4 +1,4 @@
-package com.example.game_template
+package com.drcoderz.whackaghost
 
 import io.flutter.embedding.android.FlutterActivity
 

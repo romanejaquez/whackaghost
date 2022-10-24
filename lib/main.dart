@@ -3,7 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 // Uncomment the following lines when enabling Firebase Crashlytics
-// import 'dart:io';
+import 'dart:io';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+
 // import 'package:firebase_core/firebase_core.dart';
 // import 'firebase_options.dart';
 
@@ -85,20 +87,20 @@ void guardedMain() {
   //       Read the README for more info on each integration.
 
   AdsController? adsController;
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   /// Prepare the google_mobile_ads plugin so that the first ad loads
-  //   /// faster. This can be done later or with a delay if startup
-  //   /// experience suffers.
-  //   adsController = AdsController(MobileAds.instance);
-  //   adsController.initialize();
-  // }
+  if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    /// Prepare the google_mobile_ads plugin so that the first ad loads
+    /// faster. This can be done later or with a delay if startup
+    /// experience suffers.
+    adsController = AdsController(MobileAds.instance);
+    adsController.initialize();
+  }
 
   GamesServicesController? gamesServicesController;
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   gamesServicesController = GamesServicesController()
-  //     // Attempt to log the player in.
-  //     ..initialize();
-  // }
+  if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    gamesServicesController = GamesServicesController()
+      // Attempt to log the player in.
+      ..initialize();
+  }
 
   InAppPurchaseController? inAppPurchaseController;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {

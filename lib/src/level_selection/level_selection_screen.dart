@@ -3,21 +3,16 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:game_template/src/widgets/ghost.dart';
+import 'package:game_template/src/ads/ads_controller.dart';
+import 'package:game_template/src/ads/banner_ad_widget.dart';
+import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
 import 'package:game_template/src/widgets/scoreheader.dart';
 import 'package:game_template/src/widgets/timecounter.dart';
 import 'package:game_template/src/widgets/whackghost.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:widget_mask/widget_mask.dart';
-
-import '../audio/audio_controller.dart';
-import '../audio/sounds.dart';
 import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
-import 'levels.dart';
 
 class LevelSelectionScreen extends StatefulWidget {
   const LevelSelectionScreen({super.key});
@@ -32,6 +27,10 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
     final playerProgress = context.watch<PlayerProgress>();
+
+    final adsControllerAvailable = context.watch<AdsController?>() != null;
+    final adsRemoved =
+        context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
 
     return Scaffold(
       body: Stack(
@@ -88,10 +87,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                     )
                   ),
                   const SizedBox(height: 40),
+                  
+                  // check if ads are available and not removed
+                  adsControllerAvailable && !adsRemoved ?
                   Container(
                     color: Colors.grey,
-                    height: 80,
-                  )
+                    child: BannerAdWidget()): SizedBox(height: 80)
                 ],
               ),
             ),

@@ -4,25 +4,58 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:game_template/src/ads/ads_controller.dart';
 import 'package:game_template/src/common/gamehomebutton.dart';
+import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
+import 'package:game_template/src/widgets/ghost.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../audio/audio_controller.dart';
-import '../audio/sounds.dart';
 import '../games_services/games_services.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
-import '../style/responsive_screen.dart';
 
-class MainMenuScreen extends StatelessWidget {
+class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({super.key});
+
+  @override
+  State<MainMenuScreen> createState() => _MainMenuScreenState();
+
+  static const _gap = SizedBox(height: 10);
+}
+
+class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProviderStateMixin {
+
+  late AnimationController ghostAnim;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ghostAnim = AnimationController(vsync: this,
+      duration: const Duration(seconds: 1)
+    )..repeat(reverse: true);
+
+    // Preload ad for the game screen.
+    final adsRemoved =
+        context.read<InAppPurchaseController?>()?.adRemoval.active ?? false;
+    if (!adsRemoved) {
+      final adsController = context.read<AdsController?>();
+      adsController?.preloadAd();
+    }
+  }
+
+  @override
+  void dispose() {
+    ghostAnim.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
 
     final palette = context.read<Palette>();
     final settingsController = context.watch<SettingsController>();
-    final audioController = context.watch<AudioController>();
+    final gamesServicesController = context.watch<GamesServicesController?>();
 
     return Scaffold(
       body: Stack(
@@ -39,19 +72,33 @@ class MainMenuScreen extends StatelessWidget {
               )
             ),
           ),
-          Center(
-            child: SvgPicture.asset('./assets/images/logo.svg'),
-          ),
-
           // menu
           SafeArea(
-            child: Align(
-              alignment: Alignment.bottomCenter,
+            child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Stack(
+                      children: [
+                        Center(child: SvgPicture.asset('./assets/images/logo_noghost.svg')),
+                        SlideTransition(
+                          position: Tween<Offset>(
+                            begin: Offset(0, -0.09),
+                            end: Offset(0, 0.09)
+                          ).animate(CurvedAnimation(parent: ghostAnim, curve: Curves.easeInOut)),
+                          child: Center(
+                            child: Container(
+                              margin: const EdgeInsets.only(left: 40, top: 35),
+                              child: Ghost()
+                            )
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 40),
+
                     GameHomeButton(
                       label: 'PLAY',
                       onTap: () {
@@ -63,7 +110,7 @@ class MainMenuScreen extends StatelessWidget {
                     GameHomeButton(
                       label: 'LEADERBOARDS',
                       onTap: () {
-                        
+                        gamesServicesController!.showLeaderboard();
                       }
                     ),
                     const SizedBox(height: 20),
@@ -98,86 +145,6 @@ class MainMenuScreen extends StatelessWidget {
     );
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   final palette = context.watch<Palette>();
-  //   final gamesServicesController = context.watch<GamesServicesController?>();
-  //   final settingsController = context.watch<SettingsController>();
-  //   final audioController = context.watch<AudioController>();
-
-  //   return Scaffold(
-  //     backgroundColor: palette.backgroundMain,
-  //     body: ResponsiveScreen(
-  //       mainAreaProminence: 0.45,
-  //       squarishMainArea: Center(
-  //         child: Transform.rotate(
-  //           angle: -0.1,
-  //           child: const Text(
-  //             'Flutter Game Template!',
-  //             textAlign: TextAlign.center,
-  //             style: TextStyle(
-  //               fontFamily: 'Permanent Marker',
-  //               fontSize: 55,
-  //               height: 1,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       rectangularMenuArea: Column(
-  //         mainAxisAlignment: MainAxisAlignment.end,
-  //         children: [
-  //           ElevatedButton(
-  //             onPressed: () {
-  //               audioController.playSfx(SfxType.buttonTap);
-  //               GoRouter.of(context).go('/play');
-  //             },
-  //             child: const Text('Play'),
-  //           ),
-  //           _gap,
-  //           if (gamesServicesController != null) ...[
-  //             _hideUntilReady(
-  //               ready: gamesServicesController.signedIn,
-  //               child: ElevatedButton(
-  //                 onPressed: () => gamesServicesController.showAchievements(),
-  //                 child: const Text('Achievements'),
-  //               ),
-  //             ),
-  //             _gap,
-  //             _hideUntilReady(
-  //               ready: gamesServicesController.signedIn,
-  //               child: ElevatedButton(
-  //                 onPressed: () => gamesServicesController.showLeaderboard(),
-  //                 child: const Text('Leaderboard'),
-  //               ),
-  //             ),
-  //             _gap,
-  //           ],
-  //           ElevatedButton(
-  //             onPressed: () => GoRouter.of(context).go('/settings'),
-  //             child: const Text('Settings'),
-  //           ),
-  //           _gap,
-  //           Padding(
-  //             padding: const EdgeInsets.only(top: 32),
-  //             child: ValueListenableBuilder<bool>(
-  //               valueListenable: settingsController.muted,
-  //               builder: (context, muted, child) {
-  //                 return IconButton(
-  //                   onPressed: () => settingsController.toggleMuted(),
-  //                   icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
-  //                 );
-  //               },
-  //             ),
-  //           ),
-  //           _gap,
-  //           const Text('Music by Mr Smith'),
-  //           _gap,
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   /// Prevents the game from showing game-services-related menu items
   /// until we're sure the player is signed in.
   ///
@@ -200,6 +167,4 @@ class MainMenuScreen extends StatelessWidget {
       },
     );
   }
-
-  static const _gap = SizedBox(height: 10);
 }

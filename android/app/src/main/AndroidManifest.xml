@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.game_template">
+    package="com.drcoderz.whackaghost">
    <application
-        android:label="game_template"
+        android:label="Whack-A-Ghost"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -30,7 +30,7 @@
                    See README.txt for details. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-8940200435372857~1489628992"/>
        <!-- Google Play Games -->
        <!-- Warning: Never include the Play Games app_id directly here.
                      It won't work. Use the XML file in res/values. -->

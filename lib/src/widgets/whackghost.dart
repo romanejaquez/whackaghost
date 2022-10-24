@@ -35,7 +35,6 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
 
   void randomizeDuration() {
     duration = Random().nextInt(500) + 250;
-    //duration = Random().nextInt(250) + 50;
   }
 
   void randomizeDelay() {

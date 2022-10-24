@@ -86,8 +86,8 @@ class GamesServicesController {
     try {
       await gs.GamesServices.showLeaderboards(
         // TODO: When ready, change both these leaderboard IDs.
-        iOSLeaderboardID: "some_id_from_app_store",
-        androidLeaderboardID: "sOmE_iD_fRoM_gPlAy",
+        iOSLeaderboardID: "8d21cdf5",
+        androidLeaderboardID: "CgkI6NS9y4cEEAIQAA",
       );
     } catch (e) {
       _log.severe('Cannot show leaderboard: $e');
@@ -106,8 +106,8 @@ class GamesServicesController {
     try {
       await gs.GamesServices.submitScore(
         score: gs.Score(
-          iOSLeaderboardID: 'some_id_from_app_store',
-          androidLeaderboardID: 'sOmE_iD_fRoM_gPlAy',
+          iOSLeaderboardID: '8d21cdf5',
+          androidLeaderboardID: 'CgkI6NS9y4cEEAIQAA',
           value: score.score,
         ),
       );
