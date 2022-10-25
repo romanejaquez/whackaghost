@@ -8,6 +8,7 @@ import 'package:game_template/src/ads/ads_controller.dart';
 import 'package:game_template/src/ads/banner_ad_widget.dart';
 import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
 import 'package:game_template/src/widgets/scoreheader.dart';
+import 'package:game_template/src/widgets/spider.dart';
 import 'package:game_template/src/widgets/timecounter.dart';
 import 'package:game_template/src/widgets/whackghost.dart';
 import 'package:provider/provider.dart';
@@ -66,6 +67,12 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                             alignment: Alignment.topCenter,
                             child: SvgPicture.asset('assets/images/ghostraid.svg')
                           ),
+
+                          // Align(
+                          //   alignment: Alignment.topCenter,
+                          //   child: Spider()
+                          // ),
+
                           Center(child: WhackGhost()),
                           Align(
                             alignment: Alignment.topLeft,
@@ -93,7 +100,8 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                   adsControllerAvailable && !adsRemoved ?
                   Container(
                     color: Colors.grey,
-                    child: BannerAdWidget()): SizedBox(height: 80)
+                    child: BannerAdWidget()
+                  ): SizedBox(height: 80)
                 ],
               ),
             ),
