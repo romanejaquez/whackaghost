@@ -4,6 +4,7 @@
 
 // Uncomment the following lines when enabling Firebase Crashlytics
 import 'dart:io';
+import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
@@ -211,6 +212,9 @@ class MyApp extends StatelessWidget {
               progress.getLatestFromStore();
               return progress;
             },
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ScorePanelService(),
           ),
           Provider<GamesServicesController?>.value(
               value: gamesServicesController),

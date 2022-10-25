@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/ads/ads_controller.dart';
 import 'package:game_template/src/ads/banner_ad_widget.dart';
 import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
@@ -26,8 +27,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   @override
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
-    final playerProgress = context.watch<PlayerProgress>();
-
     final adsControllerAvailable = context.watch<AdsController?>() != null;
     final adsRemoved =
         context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
@@ -60,9 +59,13 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                   const SizedBox(height: 40),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(30),
+                      padding: const EdgeInsets.all(20),
                       child: Stack(
                         children: [
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: SvgPicture.asset('assets/images/ghostraid.svg')
+                          ),
                           Center(child: WhackGhost()),
                           Align(
                             alignment: Alignment.topLeft,
@@ -72,12 +75,10 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                             alignment: Alignment.topRight,
                             child: WhackGhost()
                           ),
-
                           Align(
                             alignment: Alignment.bottomLeft,
                             child: WhackGhost()
                           ),
-
                           Align(
                             alignment: Alignment.bottomRight,
                             child: WhackGhost()

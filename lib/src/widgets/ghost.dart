@@ -13,6 +13,7 @@ class Ghost extends StatefulWidget {
 class _GhostState extends State<Ghost> {
 
   late Timer blinkTimer = Timer(Duration.zero, () {});
+  late Timer blinkTimer2 = Timer(Duration.zero, () {});
   String blinkOn = 'ghost_eyes_open.svg';
   String blinkOff = 'ghost_eyes_shut.svg';
   String blink = '';
@@ -28,7 +29,7 @@ class _GhostState extends State<Ghost> {
         blink = './assets/images/$blinkOff';
       });
 
-      blinkTimer = Timer(const Duration(milliseconds: 250), () {
+      blinkTimer2 = Timer(const Duration(milliseconds: 250), () {
         setState(() {
           blink = './assets/images/$blinkOn';
         });
@@ -38,7 +39,10 @@ class _GhostState extends State<Ghost> {
   
   @override
   void dispose() {
-    blinkTimer.cancel();
+    if (mounted) {
+      blinkTimer.cancel();
+      blinkTimer2.cancel();
+    }
     super.dispose();
   }
   

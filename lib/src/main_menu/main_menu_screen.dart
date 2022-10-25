@@ -74,69 +74,67 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
           ),
           // menu
           SafeArea(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Stack(
-                      children: [
-                        Center(child: SvgPicture.asset('./assets/images/logo_noghost.svg')),
-                        SlideTransition(
-                          position: Tween<Offset>(
-                            begin: Offset(0, -0.09),
-                            end: Offset(0, 0.09)
-                          ).animate(CurvedAnimation(parent: ghostAnim, curve: Curves.easeInOut)),
-                          child: Center(
-                            child: Container(
-                              margin: const EdgeInsets.only(left: 40, top: 35),
-                              child: Ghost()
-                            )
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 40),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Stack(
+                    children: [
+                      Center(child: SvgPicture.asset('./assets/images/logo_noghost.svg')),
+                      SlideTransition(
+                        position: Tween<Offset>(
+                          begin: Offset(0, -0.09),
+                          end: Offset(0, 0.09)
+                        ).animate(CurvedAnimation(parent: ghostAnim, curve: Curves.easeInOut)),
+                        child: Center(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 40, top: 35),
+                            child: Ghost()
+                          )
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 40),
 
-                    GameHomeButton(
-                      label: 'PLAY',
-                      onTap: () {
-                        GoRouter.of(context).go('/play');
-                      }
-                    ),
-                    const SizedBox(height: 20),
+                  GameHomeButton(
+                    label: 'PLAY',
+                    onTap: () {
+                      GoRouter.of(context).go('/play');
+                    }
+                  ),
+                  const SizedBox(height: 20),
 
-                    GameHomeButton(
-                      label: 'LEADERBOARDS',
-                      onTap: () {
-                        gamesServicesController!.showLeaderboard();
-                      }
-                    ),
-                    const SizedBox(height: 20),
+                  GameHomeButton(
+                    label: 'LEADERBOARDS',
+                    onTap: () {
+                      gamesServicesController!.showLeaderboard();
+                    }
+                  ),
+                  const SizedBox(height: 20),
 
-                    GameHomeButton(
-                      label: 'SETTINGS',
-                      onTap: () {
-                        GoRouter.of(context).go('/settings');
-                      }
-                    ),
-                    const SizedBox(height: 20),
+                  GameHomeButton(
+                    label: 'SETTINGS',
+                    onTap: () {
+                      GoRouter.of(context).go('/settings');
+                    }
+                  ),
+                  const SizedBox(height: 20),
 
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32),
-                      child: ValueListenableBuilder<bool>(
-                        valueListenable: settingsController.muted,
-                        builder: (context, muted, child) {
-                          return IconButton(
-                            onPressed: () => settingsController.toggleMuted(),
-                            icon: Icon(muted ? Icons.volume_off : Icons.volume_up, size: 30),
-                          );
-                        },
-                      ),
-                    )
-                  ],
-                ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: ValueListenableBuilder<bool>(
+                      valueListenable: settingsController.muted,
+                      builder: (context, muted, child) {
+                        return IconButton(
+                          onPressed: () => settingsController.toggleMuted(),
+                          icon: Icon(muted ? Icons.volume_off : Icons.volume_up, size: 30),
+                        );
+                      },
+                    ),
+                  )
+                ],
               ),
             ),
           )
