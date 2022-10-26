@@ -4,6 +4,7 @@
 
 // Uncomment the following lines when enabling Firebase Crashlytics
 import 'dart:io';
+import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -139,7 +140,7 @@ class MyApp extends StatelessWidget {
                 pageBuilder: (context, state) => buildMyTransition<void>(
                       child: const LevelSelectionScreen(
                           key: Key('level selection')),
-                      color: context.watch<Palette>().backgroundLevelSelection,
+                      color: context.watch<Palette>().transitionColor,
                     ),
                 routes: [
                   GoRoute(
@@ -153,7 +154,7 @@ class MyApp extends StatelessWidget {
                           level,
                           key: const Key('play session'),
                         ),
-                        color: context.watch<Palette>().backgroundPlaySession,
+                        color: context.watch<Palette>().transitionColor,
                       );
                     },
                   ),
@@ -212,6 +213,9 @@ class MyApp extends StatelessWidget {
               progress.getLatestFromStore();
               return progress;
             },
+          ),
+          ChangeNotifierProvider(
+            create: (context) => GhostStarterService(),
           ),
           ChangeNotifierProvider(
             create: (context) => ScorePanelService(),

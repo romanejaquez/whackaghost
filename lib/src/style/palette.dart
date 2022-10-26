@@ -37,5 +37,6 @@ class Palette {
 
   Color get topColor => const Color(0xFFFF8D8D);
   Color get bottomColor => const Color(0xFFE75858);
+  Color get transitionColor => Color.fromARGB(255, 148, 37, 37);
 
 }

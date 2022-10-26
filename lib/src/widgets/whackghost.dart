@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:game_template/src/widgets/ghost.dart';
 import 'package:provider/provider.dart';
@@ -85,6 +86,8 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
         children: [
           Stack(
             children: [
+
+              // ghost shadow
               Center(
                 child: Container(
                   width: 100,
@@ -99,70 +102,88 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
                   )
                 ),
               ),
-              Center(
-                child: Container(
-                  width: 100,
-                  height: 200,
-                  color: Colors.transparent,
-                  child: Builder(
-                    builder: (context) {
-                      if (isGhostKilled) {
-                        scoreAnim.forward();
-                        return Center(
-                          child: SlideTransition(
-                            position: Tween<Offset>(
-                              begin: Offset.zero,
-                              end: Offset(0, -1)
-                            )
-                            .animate(CurvedAnimation(parent: scoreAnim, curve: Curves.easeInOut)),
-                            child: SvgPicture.asset('assets/images/100pt.svg')));
-                      }
 
-                      return Stack(
-                        children: [
-                          TweenAnimationBuilder<double>(
-                            curve: Curves.easeInOut,
-                            duration: Duration(milliseconds: duration),
-                            tween: Tween<double>(begin: initValue, end: endValue),
-                            onEnd: () {
-                              
-                              randomizeDelay();
-                              delayTimer = Timer(Duration(milliseconds: delay), () {
-                                
-                                if (mounted) {
-                                  setState(() {
-                                    isEndOfAnimation = !isEndOfAnimation;
+              // ghost listener
+              Consumer<GhostStarterService>(
+                builder: (context, ghostStarter, child) {
+                  
+                  return ghostStarter.areGhostStarted ? 
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 200,
+                        color: Colors.transparent,
+                        child: Builder(
+                          builder: (context) {
 
-                                    var temp = endValue;
-                                    endValue = initValue;
-                                    initValue = temp;
+                            // when ghost killed, run the score animation
+                            if (isGhostKilled) {
 
-                                    if (!isEndOfAnimation) {
-                                      randomizeDuration();
-                                    }
-                                  });
-                                }
-                              });
-                            },
-                            builder: (context, value, widget) {
-
-                              return Positioned(
-                                bottom: value,
-                                child: GestureDetector(
-                                  onTap: () {
-                                    context.read<ScorePanelService>().incrementScore();
-                                    resetGhostValues();
-                                  },
-                                  child: Ghost()),
+                              scoreAnim.forward();
+                              return Center(
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: Offset.zero,
+                                    end: Offset(0, -1)
+                                  )
+                                  .animate(CurvedAnimation(parent: scoreAnim, curve: Curves.easeOut)),
+                                  child: SvgPicture.asset('assets/images/100pt.svg',
+                                    width: 35, height: 35
+                                  )
+                                )
                               );
                             }
-                          )
-                        ],
-                      );
-                    }
-                  )
-                ),
+
+                            return Stack(
+                              children: [
+                                TweenAnimationBuilder<double>(
+                                  curve: Curves.easeInOut,
+                                  duration: Duration(milliseconds: duration),
+                                  tween: Tween<double>(begin: initValue, end: endValue),
+                                  onEnd: () {
+                                    
+                                    randomizeDelay();
+                                    delayTimer = Timer(Duration(milliseconds: delay), () {
+                                      
+                                      if (mounted) {
+                                        setState(() {
+                                          isEndOfAnimation = !isEndOfAnimation;
+
+                                          var temp = endValue;
+                                          endValue = initValue;
+                                          initValue = temp;
+
+                                          if (!isEndOfAnimation) {
+                                            randomizeDuration();
+                                          }
+                                        });
+                                      }
+                                    });
+                                  },
+                                  builder: (context, value, widget) {
+
+                                    return Positioned(
+                                      bottom: value,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context.read<ScorePanelService>().incrementScore();
+                                          resetGhostValues();
+                                        },
+                                        child: Ghost()
+                                      ),
+                                    );
+                                  }
+                                )
+                              ],
+                            );
+                          }
+                        )
+                      ),
+                    ) : 
+                    const SizedBox.shrink();
+                },
               )
+              
             ],
           )
         ],
