@@ -164,13 +164,14 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
 
                                     return Positioned(
                                       bottom: value,
-                                      child: GestureDetector(
-                                        onTap: () {
+                                      child: Ghost(
+                                        onWhackGhost: () {
+                                          
                                           context.read<ScorePanelService>().incrementScore();
                                           resetGhostValues();
-                                        },
-                                        child: Ghost()
-                                      ),
+                                          //throw StateError('tapping on a ghost');
+                                        }
+                                      )
                                     );
                                   }
                                 )

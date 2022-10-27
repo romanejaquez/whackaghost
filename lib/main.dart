@@ -4,6 +4,8 @@
 
 // Uncomment the following lines when enabling Firebase Crashlytics
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:game_template/firebase_options.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -48,17 +50,17 @@ Future<void> main() async {
   // See the 'Crashlytics' section of the main README.md file for details.
 
   FirebaseCrashlytics? crashlytics;
-  // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
-  //   try {
-  //     WidgetsFlutterBinding.ensureInitialized();
-  //     await Firebase.initializeApp(
-  //       options: DefaultFirebaseOptions.currentPlatform,
-  //     );
-  //     crashlytics = FirebaseCrashlytics.instance;
-  //   } catch (e) {
-  //     debugPrint("Firebase couldn't be initialized: $e");
-  //   }
-  // }
+  if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
+    try {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+      crashlytics = FirebaseCrashlytics.instance;
+    } catch (e) {
+      debugPrint("Firebase couldn't be initialized: $e");
+    }
+  }
 
   await guardWithCrashlytics(
     guardedMain,
@@ -115,7 +117,7 @@ void guardedMain() {
   // }
 
   runApp(
-    MyApp(
+    WhackaghostApp(
       settingsPersistence: LocalStorageSettingsPersistence(),
       playerProgressPersistence: LocalStoragePlayerProgressPersistence(),
       inAppPurchaseController: inAppPurchaseController,
@@ -127,7 +129,7 @@ void guardedMain() {
 
 Logger _log = Logger('main.dart');
 
-class MyApp extends StatelessWidget {
+class WhackaghostApp extends StatelessWidget {
   static final _router = GoRouter(
     routes: [
       GoRoute(
@@ -193,7 +195,7 @@ class MyApp extends StatelessWidget {
 
   final AdsController? adsController;
 
-  const MyApp({
+  const WhackaghostApp({
     required this.playerProgressPersistence,
     required this.settingsPersistence,
     required this.inAppPurchaseController,

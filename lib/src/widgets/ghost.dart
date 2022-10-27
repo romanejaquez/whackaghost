@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class Ghost extends StatefulWidget {
-  const Ghost({super.key});
+
+  VoidCallback? onWhackGhost;
+  
+  Ghost({
+    super.key,
+    this.onWhackGhost  
+  });
 
   @override
   State<Ghost> createState() => _GhostState();
@@ -48,18 +54,21 @@ class _GhostState extends State<Ghost> {
   
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: 100,
-      child: Stack(
-        clipBehavior: Clip.antiAlias,
-        children: [
-          Container(
-            color: Colors.transparent
-          ),
-          Center(child: SvgPicture.asset('./assets/images/ghost_body.svg')),
-          Center(child: SvgPicture.asset(blink))
-        ],
+    return GestureDetector(
+      onTap: widget.onWhackGhost,
+      child: SizedBox(
+        height: 100,
+        width: 100,
+        child: Stack(
+          clipBehavior: Clip.antiAlias,
+          children: [
+            Container(
+              color: Colors.transparent
+            ),
+            Center(child: SvgPicture.asset('./assets/images/ghost_body.svg')),
+            Center(child: SvgPicture.asset(blink))
+          ],
+        ),
       ),
     );
   }

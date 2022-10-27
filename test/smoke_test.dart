@@ -10,7 +10,7 @@ import 'package:game_template/src/settings/persistence/memory_settings_persisten
 void main() {
   testWidgets('smoke test', (tester) async {
     // Build our game and trigger a frame.
-    await tester.pumpWidget(MyApp(
+    await tester.pumpWidget(WhackaghostApp(
       settingsPersistence: MemoryOnlySettingsPersistence(),
       playerProgressPersistence: MemoryOnlyPlayerProgressPersistence(),
       adsController: null,
