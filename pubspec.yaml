@@ -31,6 +31,7 @@ dependencies:
   flutter_svg: ^1.1.5
   widget_mask: ^1.0.0+0
   icons_launcher: ^2.0.5
+  rive: ^0.9.1
 
 icons_launcher:
   image_path: 'assets/icon.png'

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:game_template/src/games_services/ghost_raid_service.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:game_template/src/widgets/ghost.dart';
@@ -25,6 +26,7 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
   late Timer delayTimer = Timer(Duration.zero, () {});
   bool isGhostKilled = false;
   late AnimationController scoreAnim;
+  bool isGhostRaid = false;
 
   @override
   void initState() {
@@ -33,7 +35,6 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
     scoreAnim = AnimationController(vsync: this,
       duration: const Duration(milliseconds: 500)
     );
-
     randomizeDuration();
   }
 
@@ -46,8 +47,13 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
   }
 
   void randomizeDuration() {
-    //duration = Random().nextInt(500) + 250;
-    duration = Random().nextInt(250) + 150;
+    duration = isGhostRaid ? (Random().nextInt(150) + 50)
+      : (Random().nextInt(500) + 250);
+  }
+
+  void randomizeDelay() {
+    delay = isGhostRaid ? (Random().nextInt(300) + 100)
+      : (Random().nextInt(750) + 250);
   }
 
   void resetGhostValues() {
@@ -70,11 +76,6 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
         });
       });
     }
-  }
-
-  void randomizeDelay() {
-    delay = Random().nextInt(500) + 150;
-    //delay = Random().nextInt(750) + 250;
   }
 
   @override
@@ -104,85 +105,93 @@ class _WhackGhostState extends State<WhackGhost> with SingleTickerProviderStateM
               ),
 
               // ghost listener
-              Consumer<GhostStarterService>(
-                builder: (context, ghostStarter, child) {
-                  
-                  return ghostStarter.areGhostStarted ? 
-                    Center(
-                      child: Container(
-                        width: 100,
-                        height: 200,
-                        color: Colors.transparent,
-                        child: Builder(
-                          builder: (context) {
+              Consumer<GhostRaidService>(
+                builder: (context, ghostRaid, child) {
 
-                            // when ghost killed, run the score animation
-                            if (isGhostKilled) {
+                  isGhostRaid = ghostRaid.showRaid;
+                  randomizeDuration();
+                  randomizeDelay();
 
-                              scoreAnim.forward();
-                              return Center(
-                                child: SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: Offset.zero,
-                                    end: Offset(0, -1)
-                                  )
-                                  .animate(CurvedAnimation(parent: scoreAnim, curve: Curves.easeOut)),
-                                  child: SvgPicture.asset('assets/images/100pt.svg',
-                                    width: 35, height: 35
-                                  )
-                                )
-                              );
-                            }
+                  return Consumer<GhostStarterService>(
+                    builder: (context, ghostStarter, child) {
+                      
+                      return ghostStarter.areGhostStarted ? 
+                        Center(
+                          child: Container(
+                            width: 100,
+                            height: 200,
+                            color: Colors.transparent,
+                            child: Builder(
+                              builder: (context) {
 
-                            return Stack(
-                              children: [
-                                TweenAnimationBuilder<double>(
-                                  curve: Curves.easeInOut,
-                                  duration: Duration(milliseconds: duration),
-                                  tween: Tween<double>(begin: initValue, end: endValue),
-                                  onEnd: () {
-                                    
-                                    randomizeDelay();
-                                    delayTimer = Timer(Duration(milliseconds: delay), () {
-                                      
-                                      if (mounted) {
-                                        setState(() {
-                                          isEndOfAnimation = !isEndOfAnimation;
+                                // when ghost killed, run the score animation
+                                if (isGhostKilled) {
 
-                                          var temp = endValue;
-                                          endValue = initValue;
-                                          initValue = temp;
+                                  scoreAnim.forward();
+                                  return Center(
+                                    child: SlideTransition(
+                                      position: Tween<Offset>(
+                                        begin: Offset.zero,
+                                        end: Offset(0, -1)
+                                      )
+                                      .animate(CurvedAnimation(parent: scoreAnim, curve: Curves.easeOut)),
+                                      child: SvgPicture.asset('assets/images/100pt.svg',
+                                        width: 35, height: 35
+                                      )
+                                    )
+                                  );
+                                }
 
-                                          if (!isEndOfAnimation) {
-                                            randomizeDuration();
+                                return Stack(
+                                  children: [
+                                    TweenAnimationBuilder<double>(
+                                      curve: Curves.easeInOut,
+                                      duration: Duration(milliseconds: duration),
+                                      tween: Tween<double>(begin: initValue, end: endValue),
+                                      onEnd: () {
+                                        
+                                        randomizeDelay();
+                                        delayTimer = Timer(Duration(milliseconds: delay), () {
+                                          
+                                          if (mounted) {
+                                            setState(() {
+                                              isEndOfAnimation = !isEndOfAnimation;
+
+                                              var temp = endValue;
+                                              endValue = initValue;
+                                              initValue = temp;
+
+                                              if (!isEndOfAnimation) {
+                                                randomizeDuration();
+                                              }
+                                            });
                                           }
                                         });
-                                      }
-                                    });
-                                  },
-                                  builder: (context, value, widget) {
+                                      },
+                                      builder: (context, value, widget) {
 
-                                    return Positioned(
-                                      bottom: value,
-                                      child: Ghost(
-                                        onWhackGhost: () {
-                                          
-                                          context.read<ScorePanelService>().incrementScore();
-                                          resetGhostValues();
-                                          //throw StateError('tapping on a ghost');
-                                        }
-                                      )
-                                    );
-                                  }
-                                )
-                              ],
-                            );
-                          }
-                        )
-                      ),
-                    ) : 
-                    const SizedBox.shrink();
-                },
+                                        return Positioned(
+                                          bottom: value,
+                                          child: Ghost(
+                                            onWhackGhost: () {
+                                              
+                                              context.read<ScorePanelService>().incrementScore();
+                                              resetGhostValues();
+                                            }
+                                          )
+                                        );
+                                      }
+                                    )
+                                  ],
+                                );
+                              }
+                            )
+                          ),
+                        ) : 
+                        const SizedBox.shrink();
+                    },
+                  );
+                }
               )
               
             ],

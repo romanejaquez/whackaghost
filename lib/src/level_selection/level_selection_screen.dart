@@ -3,19 +3,18 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/ads/ads_controller.dart';
 import 'package:game_template/src/ads/banner_ad_widget.dart';
+import 'package:game_template/src/games_services/ghost_raid_service.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
+import 'package:game_template/src/widgets/ghostfield.dart';
+import 'package:game_template/src/widgets/ghostraid.dart';
 import 'package:game_template/src/widgets/scoreheader.dart';
-import 'package:game_template/src/widgets/spider.dart';
 import 'package:game_template/src/widgets/timecounter.dart';
 import 'package:game_template/src/widgets/timesup.dart';
-import 'package:game_template/src/widgets/whackghost.dart';
 import 'package:game_template/src/widgets/whackghostcounter.dart';
 import 'package:provider/provider.dart';
-import '../player_progress/player_progress.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
@@ -50,81 +49,65 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
               )
             ),
           ),
-          ResponsiveScreen(
-            squarishMainArea: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  ScoreHeader(
-                    centerWidget: TimeCounter(
-                      timeInSeconds: 30,
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Stack(
-                        children: [
-                          // Align(
-                          //   alignment: Alignment.topCenter,
-                          //   child: SvgPicture.asset('assets/images/ghostraid.svg')
-                          // ),
-
-                          // Align(
-                          //   alignment: Alignment.topCenter,
-                          //   child: Spider()
-                          // ),
-
-                          
-                          Center(
-                            child: WhackGhost()
-                          ),
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: WhackGhost()
-                          ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: WhackGhost()
-                          ),
-                          Align(
-                            alignment: Alignment.bottomLeft,
-                            child: WhackGhost()
-                          ),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: WhackGhost()
-                          ),
-
-                          // Counter
-                          WhackAGhostCounter(),
-
-                          //
-                          Consumer<GhostStarterService>(
-                            builder: (context, ghostStarter, child) {
-                              return ghostStarter.isTimeUp ? 
-                              Center(
-                                child: TimesUp() ,
-                              ) : const SizedBox.shrink();
-                            }
-                          )
-                        ],
+          Stack(
+            children: [
+              // SpiderScrolling(),
+              ResponsiveScreen(
+                squarishMainArea: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      ScoreHeader(
+                        centerWidget: TimeCounter(
+                          timeInSeconds: 30,
+                        ),
                       ),
-                    )
+                      const SizedBox(height: 40),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Stack(
+                            children: [
+                              Consumer<GhostRaidService>(
+                                builder: (context, ghostRaid, child) {
+                                  return ghostRaid.showRaid ? 
+                                    GhostRaid() : const SizedBox.shrink();
+                                },
+                              ),
+                              
+                              // field of ghosts
+                              GhostField(),
+                              
+                              // Counter
+                              WhackAGhostCounter(),
+
+                              // ghost starter
+                              Consumer<GhostStarterService>(
+                                builder: (context, ghostStarter, child) {
+                                  return ghostStarter.isTimeUp ? 
+                                  Center(
+                                    child: TimesUp() ,
+                                  ) : const SizedBox.shrink();
+                                }
+                              )
+                            ],
+                          ),
+                        )
+                      ),
+                      const SizedBox(height: 40),
+                      
+                      // check if ads are available and not removed
+                      adsControllerAvailable && !adsRemoved ?
+                      Container(
+                        color: Colors.grey,
+                        child: BannerAdWidget()
+                      ): SizedBox(height: 80)
+                    ],
                   ),
-                  const SizedBox(height: 40),
-                  
-                  // check if ads are available and not removed
-                  adsControllerAvailable && !adsRemoved ?
-                  Container(
-                    color: Colors.grey,
-                    child: BannerAdWidget()
-                  ): SizedBox(height: 80)
-                ],
+                ),
+                rectangularMenuArea: const SizedBox.shrink(),
               ),
-            ),
-            rectangularMenuArea: const SizedBox.shrink(),
+            ],
           )
         ],
       ),

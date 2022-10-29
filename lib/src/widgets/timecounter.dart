@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:game_template/src/games_services/ghost_raid_service.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:provider/provider.dart';
 
@@ -35,6 +36,10 @@ class _TimeCounterState extends State<TimeCounter> {
 
     counterTimer = Timer.periodic(const Duration(seconds: 1),
       (timer) {
+
+        if (counterDisplayValue == 15) {
+          context.read<GhostRaidService>().triggerRaid();
+        }
         
         setState(() {
           counterDisplayValue--;
@@ -48,6 +53,7 @@ class _TimeCounterState extends State<TimeCounter> {
           context.read<GhostStarterService>().stopGhosts();
           context.read<GhostStarterService>().setTimeUp();
         }
+
     });
   }
 

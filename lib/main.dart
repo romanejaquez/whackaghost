@@ -6,8 +6,10 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:game_template/firebase_options.dart';
+import 'package:game_template/src/games_services/ghost_raid_service.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/games_services/scorepanel_service.dart';
+import 'package:game_template/src/games_services/spider_generator.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
@@ -218,6 +220,12 @@ class WhackaghostApp extends StatelessWidget {
           ),
           ChangeNotifierProvider(
             create: (context) => GhostStarterService(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => SpiderGenerator(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => GhostRaidService(),
           ),
           ChangeNotifierProvider(
             create: (context) => ScorePanelService(),

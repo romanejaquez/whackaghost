@@ -3,13 +3,12 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:game_template/src/ads/ads_controller.dart';
 import 'package:game_template/src/common/gamehomebutton.dart';
 import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
-import 'package:game_template/src/widgets/ghost.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:rive/rive.dart' as rive;
 import '../games_services/games_services.dart';
 import '../settings/settings.dart';
 import '../style/palette.dart';
@@ -25,16 +24,13 @@ class MainMenuScreen extends StatefulWidget {
 
 class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProviderStateMixin {
 
-  late AnimationController ghostAnim;
+    late rive.RiveAnimationController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    ghostAnim = AnimationController(vsync: this,
-      duration: const Duration(seconds: 1)
-    )..repeat(reverse: true);
-
+    _controller = rive.SimpleAnimation('ghost', autoplay: true);
     // Preload ad for the game screen.
     final adsRemoved =
         context.read<InAppPurchaseController?>()?.adRemoval.active ?? false;
@@ -46,7 +42,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
 
   @override
   void dispose() {
-    ghostAnim.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -79,22 +75,17 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Stack(
-                    children: [
-                      Center(child: SvgPicture.asset('./assets/images/logo_noghost.svg')),
-                      SlideTransition(
-                        position: Tween<Offset>(
-                          begin: Offset(0, -0.09),
-                          end: Offset(0, 0.09)
-                        ).animate(CurvedAnimation(parent: ghostAnim, curve: Curves.easeInOut)),
-                        child: Center(
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 40, top: 35),
-                            child: Ghost()
-                          )
-                        ),
-                      )
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      child: rive.RiveAnimation.asset(
+                        'assets/images/whackaghost.riv',
+                        fit: BoxFit.contain,
+                        controllers: [_controller],
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 40),
 
