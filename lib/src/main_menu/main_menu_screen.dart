@@ -79,7 +79,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                     padding: const EdgeInsets.all(20),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width,
-                      height: 200,
+                      height: 250,
                       child: rive.RiveAnimation.asset(
                         'assets/images/whackaghost.riv',
                         fit: BoxFit.contain,
