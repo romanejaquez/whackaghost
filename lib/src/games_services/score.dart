@@ -8,17 +8,19 @@ import 'package:flutter/foundation.dart';
 @immutable
 class Score {
   final int score;
-
   final Duration duration;
-
   final int level;
-
+  
   factory Score(int level, int difficulty, Duration duration) {
     // The higher the difficulty, the higher the score.
     var score = difficulty;
     // The lower the time to beat the level, the higher the score.
     score *= 10000 ~/ (duration.inSeconds.abs() + 1);
     return Score._(score, duration, level);
+  }
+
+  factory Score.onlyScore(int score) {
+    return Score._(score, Duration.zero, 0);
   }
 
   const Score._(this.score, this.duration, this.level);

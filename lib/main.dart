@@ -9,7 +9,6 @@ import 'package:game_template/firebase_options.dart';
 import 'package:game_template/src/games_services/ghost_raid_service.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
 import 'package:game_template/src/games_services/scorepanel_service.dart';
-import 'package:game_template/src/games_services/spider_generator.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 // import 'package:firebase_core/firebase_core.dart';
@@ -173,7 +172,7 @@ class WhackaghostApp extends StatelessWidget {
                           score: score,
                           key: const Key('win game'),
                         ),
-                        color: context.watch<Palette>().backgroundPlaySession,
+                        color: context.watch<Palette>().transitionColor,
                       );
                     },
                   )
@@ -222,9 +221,6 @@ class WhackaghostApp extends StatelessWidget {
             create: (context) => GhostStarterService(),
           ),
           ChangeNotifierProvider(
-            create: (context) => SpiderGenerator(),
-          ),
-          ChangeNotifierProvider(
             create: (context) => GhostRaidService(),
           ),
           ChangeNotifierProvider(
@@ -265,7 +261,7 @@ class WhackaghostApp extends StatelessWidget {
 
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            title: 'Whackaghost',
             theme: ThemeData.from(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: palette.darkPen,

@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:game_template/src/widgets/ghost.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -27,47 +28,75 @@ class WinGameScreen extends StatelessWidget {
     final adsRemoved =
         context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
     final palette = context.watch<Palette>();
-
     const gap = SizedBox(height: 10);
+    TextStyle defaultLabel = TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Grobold', fontSize: 20);
 
     return Scaffold(
-      backgroundColor: palette.backgroundPlaySession,
-      body: ResponsiveScreen(
-        squarishMainArea: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (adsControllerAvailable && !adsRemoved) ...[
-              const Expanded(
-                child: Center(
-                  child: BannerAdWidget(),
-                ),
-              ),
-            ],
-            gap,
-            const Center(
-              child: Text(
-                'You won!',
-                style: TextStyle(fontFamily: 'Permanent Marker', fontSize: 50),
+      body: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    palette.topColor,
+                    palette.bottomColor
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter
+                )
               ),
             ),
-            gap,
-            Center(
-              child: Text(
-                'Score: ${score.score}\n'
-                'Time: ${score.formattedTime}',
-                style: const TextStyle(
-                    fontFamily: 'Permanent Marker', fontSize: 20),
+            SafeArea(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Transform.scale(
+                      scale: 1.5,
+                      child: Ghost()),
+                    const SizedBox(height: 50),
+                    Text('Thank you for\nsubmitting your score!',
+                      style: defaultLabel.copyWith(color: Colors.black),
+                      textAlign: TextAlign.center,
+                    ),
+                    gap,
+                    Text('Your Score: ',
+                      style: defaultLabel
+                    ),
+                    gap,
+                    Text(
+                      '${score.score}',
+                      style: defaultLabel.copyWith(fontSize: 50),
+                    ),
+                    gap,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: palette.transitionColor,
+                        shape: StadiumBorder()
+                      ),
+                      onPressed: () {
+                        GoRouter.of(context).pop();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Text('Continue',
+                          style: TextStyle(
+                            fontFamily: 'Grobold',
+                            fontSize: 20  
+                          )
+                        ),
+                      )
+                    )
+                  ],
+                ),
               ),
             ),
           ],
         ),
-        rectangularMenuArea: ElevatedButton(
-          onPressed: () {
-            GoRouter.of(context).pop();
-          },
-          child: const Text('Continue'),
-        ),
-      ),
     );
   }
 }

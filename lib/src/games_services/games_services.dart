@@ -4,8 +4,13 @@
 
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:game_template/src/games_services/ghost_raid_service.dart';
+import 'package:game_template/src/games_services/ghost_starter_service.dart';
+import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:games_services/games_services.dart' as gs;
 import 'package:logging/logging.dart';
+import 'package:provider/provider.dart';
 
 import 'score.dart';
 
@@ -85,13 +90,18 @@ class GamesServicesController {
 
     try {
       await gs.GamesServices.showLeaderboards(
-        // TODO: When ready, change both these leaderboard IDs.
-        iOSLeaderboardID: "8d21cdf5",
-        androidLeaderboardID: "CgkI6NS9y4cEEAIQAg",
+        iOSLeaderboardID: gs.GamesServices.iOSLeaderboardID,
+        androidLeaderboardID: gs.GamesServices.androidLeaderboardID,
       );
     } catch (e) {
       _log.severe('Cannot show leaderboard: $e');
     }
+  }
+
+  void resetServices(BuildContext context) {
+    context.read<GhostRaidService>().reset();
+    context.read<GhostStarterService>().reset();
+    context.read<ScorePanelService>().reset();
   }
 
   /// Submits [score] to the leaderboard.
@@ -106,8 +116,8 @@ class GamesServicesController {
     try {
       await gs.GamesServices.submitScore(
         score: gs.Score(
-          iOSLeaderboardID: '8d21cdf5',
-          androidLeaderboardID: 'CgkI6NS9y4cEEAIQAg',
+          iOSLeaderboardID: gs.GamesServices.iOSLeaderboardID,
+          androidLeaderboardID: gs.GamesServices.androidLeaderboardID,
           value: score.score,
         ),
       );

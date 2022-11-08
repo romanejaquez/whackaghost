@@ -5,8 +5,11 @@
 import 'package:flutter/material.dart';
 import 'package:game_template/src/ads/ads_controller.dart';
 import 'package:game_template/src/ads/banner_ad_widget.dart';
+import 'package:game_template/src/games_services/games_services.dart';
 import 'package:game_template/src/games_services/ghost_raid_service.dart';
 import 'package:game_template/src/games_services/ghost_starter_service.dart';
+import 'package:game_template/src/games_services/score.dart';
+import 'package:game_template/src/games_services/scorepanel_service.dart';
 import 'package:game_template/src/in_app_purchase/in_app_purchase.dart';
 import 'package:game_template/src/widgets/ghostfield.dart';
 import 'package:game_template/src/widgets/ghostraid.dart';
@@ -14,6 +17,7 @@ import 'package:game_template/src/widgets/scoreheader.dart';
 import 'package:game_template/src/widgets/timecounter.dart';
 import 'package:game_template/src/widgets/timesup.dart';
 import 'package:game_template/src/widgets/whackghostcounter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../style/palette.dart';
 import '../style/responsive_screen.dart';
@@ -29,7 +33,7 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
   
   @override
   Widget build(BuildContext context) {
-    final palette = context.watch<Palette>();
+    final palette = context.read<Palette>();
     final adsControllerAvailable = context.watch<AdsController?>() != null;
     final adsRemoved =
         context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
@@ -51,7 +55,6 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
           ),
           Stack(
             children: [
-              // SpiderScrolling(),
               ResponsiveScreen(
                 squarishMainArea: Padding(
                   padding: const EdgeInsets.all(20),
@@ -67,30 +70,44 @@ class _LevelSelectionScreenState extends State<LevelSelectionScreen> with Single
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Stack(
-                            children: [
-                              Consumer<GhostRaidService>(
-                                builder: (context, ghostRaid, child) {
-                                  return ghostRaid.showRaid ? 
-                                    GhostRaid() : const SizedBox.shrink();
-                                },
-                              ),
-                              
-                              // field of ghosts
-                              GhostField(),
-                              
-                              // Counter
-                              WhackAGhostCounter(),
+                              children: [
+                                Consumer<GhostRaidService>(
+                                  builder: (context, ghostRaid, child) {
+                                    return ghostRaid.showRaid ? 
+                                      GhostRaid() : const SizedBox.shrink();
+                                  },
+                                ),
+                                
+                                // field of ghosts
+                                GhostField(),
+                                
+                                // Counter
+                                WhackAGhostCounter(),
+                                
+                                // ghost starter
+                                Consumer<GhostStarterService>(
+                                  builder: (context, ghostStarter, child) {
+                                    return ghostStarter.isTimeUp ? 
+                                    Center(
+                                      child: TimesUp(
+                                        onExit: () {
+                                          context.read<GamesServicesController>().resetServices(context);
+                                          GoRouter.of(context).pop();
+                                        },
+                                        onSubmitScore: () async {
+                                          var totalScore = context.read<ScorePanelService>().totalScore;
+                                          var s = Score.onlyScore(totalScore);
 
-                              // ghost starter
-                              Consumer<GhostStarterService>(
-                                builder: (context, ghostStarter, child) {
-                                  return ghostStarter.isTimeUp ? 
-                                  Center(
-                                    child: TimesUp() ,
-                                  ) : const SizedBox.shrink();
-                                }
-                              )
-                            ],
+                                          await context.read<GamesServicesController>()
+                                            .submitLeaderboardScore(s);
+
+                                            GoRouter.of(context).go('/play/won', extra: {'score': s });
+                                        }
+                                      ) ,
+                                    ) : const SizedBox.shrink();
+                                  }
+                                )
+                              ],
                           ),
                         )
                       ),

@@ -16,6 +16,7 @@ class _WhackAGhostCounterState extends State<WhackAGhostCounter> with SingleTick
   
   late AnimationController numberCtrl;
   late Timer numberTimer = Timer(Duration.zero, () {});
+  late Timer overallTimer = Timer(Duration.zero, () {});
   String imgPath = '';
   int count = 3;
   bool isCountComplete = false;
@@ -29,9 +30,20 @@ class _WhackAGhostCounterState extends State<WhackAGhostCounter> with SingleTick
       duration: const Duration(seconds: 1)
     );
 
+    executeCounter(context);
+  }
+
+  void executeCounter(BuildContext context) {
+
+    count = 3;
+    isCountComplete = false;
+    overallTimer.cancel();
+    numberTimer.cancel();
+    numberCtrl.reset();
+
     imgPath = 'assets/images/$count.svg';
 
-    Timer(const Duration(milliseconds: 500), () {
+    overallTimer = Timer(const Duration(milliseconds: 500), () {
       numberCtrl.forward();
 
       numberTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -60,13 +72,13 @@ class _WhackAGhostCounterState extends State<WhackAGhostCounter> with SingleTick
         }
       });
     });
-    
   }
 
   @override
   void dispose() {
     numberCtrl.dispose();
     numberTimer.cancel();
+    overallTimer.cancel();
     super.dispose();
   }
   

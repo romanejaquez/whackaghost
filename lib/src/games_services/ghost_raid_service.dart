@@ -8,4 +8,9 @@ class GhostRaidService extends ChangeNotifier {
     showRaid = true;
     notifyListeners();
   }
+
+  void reset() {
+    showRaid = false;
+    notifyListeners();
+  }
 }

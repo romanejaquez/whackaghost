@@ -6,6 +6,13 @@ class ScorePanelService extends ChangeNotifier {
   int totalScore = 0;
   int ghostValue = 100;
 
+  void reset() {
+    numOfGhosts = 0;
+    totalScore = 0;
+    ghostValue = 100;
+    notifyListeners();
+  }
+
   void incrementGhosts() {
     numOfGhosts++;
     notifyListeners();

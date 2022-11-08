@@ -5,6 +5,12 @@ class GhostStarterService extends ChangeNotifier {
   bool areGhostStarted = false;
   bool isTimeUp = false;
 
+  void reset() {
+    areGhostStarted = false;
+    isTimeUp = false;
+    notifyListeners();
+  }
+
   void startGhosts() {
     areGhostStarted = true;
     notifyListeners();
