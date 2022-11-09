@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:game_template/src/widgets/ghost.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import '../ads/ads_controller.dart';
 import '../ads/banner_ad_widget.dart';
 import '../games_services/score.dart';
