@@ -20,6 +20,10 @@ import 'score.dart';
 ///
 /// A facade of `package:games_services`.
 class GamesServicesController {
+
+  static const String iOSLeaderboardID = '8d21cdf5';
+  static const androidLeaderboardID = 'CgkI6NS9y4cEEAIQAw';
+
   static final Logger _log = Logger('GamesServicesController');
 
   final Completer<bool> _signedInCompleter = Completer();
@@ -90,8 +94,8 @@ class GamesServicesController {
 
     try {
       await gs.GamesServices.showLeaderboards(
-        iOSLeaderboardID: gs.GamesServices.iOSLeaderboardID,
-        androidLeaderboardID: gs.GamesServices.androidLeaderboardID,
+        iOSLeaderboardID: GamesServicesController.iOSLeaderboardID,
+        androidLeaderboardID: GamesServicesController.androidLeaderboardID,
       );
     } catch (e) {
       _log.severe('Cannot show leaderboard: $e');
@@ -116,8 +120,8 @@ class GamesServicesController {
     try {
       await gs.GamesServices.submitScore(
         score: gs.Score(
-          iOSLeaderboardID: gs.GamesServices.iOSLeaderboardID,
-          androidLeaderboardID: gs.GamesServices.androidLeaderboardID,
+          iOSLeaderboardID: GamesServicesController.iOSLeaderboardID,
+          androidLeaderboardID: GamesServicesController.androidLeaderboardID,
           value: score.score,
         ),
       );
