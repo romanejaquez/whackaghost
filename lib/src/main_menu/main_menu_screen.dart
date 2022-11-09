@@ -105,14 +105,6 @@ class _MainMenuScreenState extends State<MainMenuScreen> with SingleTickerProvid
                   ),
                   const SizedBox(height: 20),
 
-                  GameHomeButton(
-                    label: 'SETTINGS',
-                    onTap: () {
-                      GoRouter.of(context).go('/settings');
-                    }
-                  ),
-                  const SizedBox(height: 20),
-
                   Padding(
                     padding: const EdgeInsets.only(top: 32),
                     child: ValueListenableBuilder<bool>(
